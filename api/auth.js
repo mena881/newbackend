@@ -51,9 +51,6 @@ export default async function handler(req, res) {
 
         const clientId = result.database?.client_id;
 
-        const clientConfig =
-            CLIENTS_CONFIG[clientId] || null;
-
         return res.status(200).json({
             success: true,
 
@@ -65,9 +62,7 @@ export default async function handler(req, res) {
 
             database: {
                 client_id: clientId
-            },
-
-            firebase: clientConfig
+            }
         });
 
     } catch (error) {
