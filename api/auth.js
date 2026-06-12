@@ -16,7 +16,18 @@ const CLIENTS_CONFIG = {
 const GOOGLE_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbyztFTOFHunQKahA99RskXGKx6Sh9CUCLwij8gwHqDd0UUblmJ6DCzzGfAMCXf7iS1P/exec";
 
+const API_SECRET = process.env.API_SECRET_TOKEN;
+
 export default async function handler(req, res) {
+
+    const token = req.headers["x-api-token"];
+
+    if (!token || token !== API_SECRET) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
 
     if (req.method !== "GET") {
         return res.status(405).json({
@@ -40,6 +51,10 @@ export default async function handler(req, res) {
             `${GOOGLE_SCRIPT_URL}?code=${encodeURIComponent(code)}`
         );
 
+        if (!response.ok) {
+            throw new Error("Failed to connect to Google Script");
+        }
+
         const result = await response.json();
 
         if (!result.success) {
@@ -50,6 +65,9 @@ export default async function handler(req, res) {
         }
 
         const clientId = result.database?.client_id;
+
+        const clientConfig =
+            CLIENTS_CONFIG[clientId] || null;
 
         return res.status(200).json({
             success: true,
@@ -62,16 +80,18 @@ export default async function handler(req, res) {
 
             database: {
                 client_id: clientId
-            }
+            },
+
+            firebase: clientConfig
         });
 
     } catch (error) {
 
-        console.error(error);
+        console.error("API Error:", error);
 
         return res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message || "Internal Server Error"
         });
     }
 }
