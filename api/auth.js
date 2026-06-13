@@ -1,3 +1,4 @@
+```js
 const CLIENTS_CONFIG = {
     "client_1": {
         databaseURL: "https://test-3b890-default-rtdb.firebaseio.com/",
@@ -64,24 +65,15 @@ export default async function handler(req, res) {
             });
         }
 
-        const clientId = result.database?.client_id;
+        return res.status(200).json({
+            success: true,
 
-        const clientConfig =
-            CLIENTS_CONFIG[clientId] || null;
+            data: result.data || {},
 
-return res.status(200).json({
-    success: true,
+            limits: result.limits || {},
 
-    data: result.data || {},
-
-    limits: result.limits || {},
-
-    pages: result.pages || {},
-
-    database: {
-        client_id: clientId
-    }
-});
+            pages: result.pages || {}
+        });
 
     } catch (error) {
 
@@ -93,3 +85,4 @@ return res.status(200).json({
         });
     }
 }
+```
