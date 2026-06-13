@@ -1,3 +1,15 @@
+// أضف هذا الكود في أعلى الملف، قبل أي شيء
+export default async function handler(req, res) {
+    // ===== حل مشكلة CORS =====
+    // السماح بالطلبات من أي مصدر (للاختبار)
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-token');
+    
+    // معالجة طلب OPTIONS (preflight) الذي يرسله المتصفح
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
 import jwt from "jsonwebtoken";
 
 const CLIENTS_CONFIG = {
