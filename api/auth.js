@@ -72,10 +72,6 @@ export default async function handler(req, res) {
         return res.status(405).json({ success: false, message: "Method not allowed" });
     }
     
-    const token = req.headers["x-api-token"];
-    if (!token || token !== API_SECRET) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
     
     try {
         const { code } = req.body;
